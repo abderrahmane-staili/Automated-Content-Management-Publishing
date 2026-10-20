@@ -1,201 +1,207 @@
-**English** | [العربية](README.ar.md)
+[English](README.md) | **العربية**
 
-# n8n + Playwright: WordPress → Facebook Groups Automation
+# أتمتة WordPress ← مجموعات Facebook بـ n8n وPlaywright
 
-A portfolio project that shows how to chain **n8n**, **REST APIs**, **Google Sheets** and
-**Node.js / Playwright bots running on separate ports** into a single automated pipeline.
+مشروع للـ portfolio يوضح كيف تُربط **n8n** و**REST APIs** و**Google Sheets** و**بوتات Node.js / Playwright تعمل على منافذ مستقلة** في خط أتمتة واحد.
 
-![Architecture](docs/architecture.svg)
+![البنية](docs/architecture.svg)
 
-## What it does
+## ماذا يفعل المشروع
 
-1. **Collect** – n8n pulls articles (title, description, image) from a list of source sites.
-2. **Publish** – each article is created on **WordPress** through its REST API (image uploaded as media, then the post).
-3. **Store** – everything is tracked in **Google Sheets** (queue, status, WordPress URL).
-4. **Distribute** – n8n splits the Facebook groups across **4 sub-workflows**. Each one calls its own
-   **Playwright bot** (own port, own Brave profile) that posts the title + image in a group
-   and drops the WordPress link in the first comment.
-5. **Monitor** – success and errors are sent to **Telegram**.
+1. **الجمع**: يسحب n8n المقالات (العنوان، الوصف، الصورة) من قائمة مواقع مصدر.
+2. **النشر**: يُنشأ كل مقال على **WordPress** عبر REST API (رفع الصورة كوسيط media ثم إنشاء المقال).
+3. **التخزين**: يُتتبَّع كل شيء في **Google Sheets** (الطابور، الحالة، رابط WordPress).
+4. **التوزيع**: يقسّم n8n مجموعات Facebook على **4 sub-workflows**. كل واحد يستدعي **بوت Playwright** خاصاً به (منفذ خاص وملف Brave خاص) ينشر العنوان والصورة في المجموعة، ثم يضع رابط WordPress في أول تعليق.
+5. **المراقبة**: يُرسَل النجاح والأخطاء إلى **Telegram**.
 
-Running 4 bots in parallel is the point of the project: it demonstrates multi-process
-orchestration, API design, queues, and error handling — not volume.
+الهدف من تشغيل 4 بوتات بالتوازي هو إظهار التنسيق بين عدة عمليات، وتصميم الـ API، وإدارة الطوابير، ومعالجة الأخطاء، وليس زيادة الحجم.
 
-## Tech stack
+## التقنيات المستعملة
 
-| Layer | Tool |
-|-------|------|
-| Orchestration | n8n (self-hosted, Docker) |
-| Browser automation | Node.js 18+, Playwright, Brave (persistent profiles) |
-| Bot API | Express (`/post-to-group`, `/health`) |
-| CMS | WordPress REST API (Application Passwords) |
-| Data store | Google Sheets |
-| Alerts | Telegram Bot API |
+| الطبقة             | التقنية                                            |
+| ------------------ | -------------------------------------------------- |
+| الأتمتة            | n8n (استضافة ذاتية على Docker)                     |
+| أتمتة المتصفح      | Node.js 18+ وPlaywright وBrave (ملفات تعريف دائمة) |
+| واجهة البوت        | Express (`/post-to-group` و`/health`)              |
+| نظام إدارة المحتوى | WordPress REST API (Application Passwords)         |
+| مخزن البيانات      | Google Sheets                                      |
+| التنبيهات          | Telegram Bot API                                   |
 
-## Repository structure
+## هيكل المشروع
 
 ```
 .
-├── docs/architecture.svg
+├── docs/architecture.svg      # المخطط أعلاه
 ├── playwright-bot/
-│   ├── server.js              # one bot = one port = one Brave profile
-│   ├── start-all.js           # launches BOT_COUNT bots (3001..3004)
+│   ├── server.js              # بوت واحد = منفذ واحد = ملف Brave واحد
+│   ├── start-all.js           # يشغّل BOT_COUNT بوت (3001..3004)
 │   └── package.json
-├── scripts/first-login.js     # one-time manual Facebook login per profile
-├── workflows/                 # exported n8n workflows (main + sub-1..4)
+├── scripts/first-login.js     # تسجيل دخول يدوي لـ Facebook مرة واحدة لكل ملف
+├── workflows/                 # workflows مُصدَّرة من n8n (main + sub-1..4)
 ├── docker-compose.yml         # n8n
 ├── .env.example
 ├── README.md
 └── README.ar.md
 ```
 
-## Prerequisites
+## المتطلبات
 
 - Node.js **18+**
-- Docker + Docker Compose
-- Brave browser installed
-- A WordPress site (5.6+) with an **Application Password**
-- A Google account (Sheets API credentials in n8n)
-- A Telegram bot token (optional, for alerts)
+- Docker وDocker Compose
+- متصفح Brave مثبّت
+- موقع WordPress (5.6 أو أحدث) مع **Application Password**
+- حساب Google (اعتماد Sheets في n8n)
+- توكن بوت Telegram (اختياري، للتنبيهات)
 
-## Installation
+## التثبيت
 
-### 1. Clone and configure
+### 1. الاستنساخ والإعداد
 
 ```bash
 git clone https://github.com/<your-username>/n8n-wp-facebook-automation.git
 cd n8n-wp-facebook-automation
-cp .env.example .env        # then edit BRAVE_PATH and API_KEY
+cp .env.example .env        # في PowerShell: copy .env.example .env
 ```
 
-### 2. Start n8n
+عدّل في `.env` القيمتين `BRAVE_PATH` و`API_KEY`.
+
+### 2. تشغيل n8n
 
 ```bash
 docker compose up -d
 ```
 
-Open <http://localhost:5678> and create your owner account.
+افتح <http://localhost:5678> وأنشئ حساب المالك.
 
-### 3. Install and start the bots
+### 3. تثبيت البوتات وتشغيلها
 
 ```bash
 cd playwright-bot
 npm install
-npm run start:all             # starts :3001 :3002 :3003 :3004
+npm run start:all             # يشغّل :3001 :3002 :3003 :3004
 ```
 
-Check them:
+للتحقق:
 
 ```bash
 curl -H "x-api-key: $API_KEY" http://localhost:3001/health
 ```
 
-### 4. Log in to Facebook once per bot
+### 4. تسجيل الدخول إلى Facebook مرة لكل بوت
 
-Each bot has its own Brave profile, so each one needs a one-time manual login:
+لكل بوت ملف Brave خاص به، لذلك يحتاج كل واحد إلى تسجيل دخول يدوي لمرة واحدة:
 
 ```bash
-node scripts/first-login.js bot-1   # log in, close the window
+node scripts/first-login.js bot-1   # سجّل الدخول ثم أغلق النافذة
 node scripts/first-login.js bot-2
 node scripts/first-login.js bot-3
 node scripts/first-login.js bot-4
 ```
 
-Sessions are stored in `playwright-bot/profiles/` (git-ignored).
-Stop the bots before running this script — a Brave profile can only be open once.
+تُحفظ الجلسات في `playwright-bot/profiles/` (مستثناة من git).
+أوقف البوتات قبل تشغيل هذا السكربت، لأن ملف Brave الواحد لا يُفتح إلا مرة واحدة.
 
-### 5. Prepare WordPress
+### 5. إعداد WordPress
 
-1. *Users → Profile → Application Passwords* → create one.
-2. Test it:
+1. *Users ← Profile ← Application Passwords* وأنشئ واحداً.
+2. اختبره:
 
 ```bash
 curl -u "user:APP_PASSWORD" https://your-site.com/wp-json/wp/v2/users/me
 ```
 
-### 6. Prepare Google Sheets
+### 6. إعداد Google Sheets
 
-One spreadsheet, two tabs:
+أنشئ ملفاً واحداً بورقتين:
 
 **`posts`**
 
 | title | description | image_url | wp_post_id | wp_url | status |
-|-------|-------------|-----------|------------|--------|--------|
+| ----- | ----------- | --------- | ---------- | ------ | ------ |
 
 **`groups`**
 
 | group_url | bot (1-4) | last_posted_at |
-|-----------|-----------|----------------|
+| --------- | --------- | -------------- |
 
-### 7. Import the workflows into n8n
+### 7. استيراد الـ workflows في n8n
 
-1. **Workflows → Import from file** → import `workflows/sub-1.json` … `sub-4.json` first, then `workflows/main.json`.
-2. Create credentials: **Google Sheets**, **WordPress** (HTTP Basic Auth), **Telegram**, and an **HTTP Header Auth** with `x-api-key = <API_KEY>`.
-3. In `main`, point each *Execute Workflow* node to the matching sub-workflow.
-4. In each sub-workflow, the HTTP Request node must target:
+1. في n8n: **Workflows ← Import from file** واستورد `workflows/sub-1.json` … `sub-4.json` أولاً، ثم `workflows/main.json`.
+2. أنشئ الاعتمادات: **Google Sheets** و**WordPress** (HTTP Basic Auth) و**Telegram**، واعتمد **HTTP Header Auth** بالقيمة `x-api-key = <API_KEY>`.
+3. في `main` اربط كل عقدة *Execute Workflow* بالـ sub-workflow المطابق.
+4. في كل sub-workflow يجب أن تشير عقدة HTTP Request إلى:
 
-   | Sub-workflow | URL |
-   |--------------|-----|
-   | Sub 1 | `http://host.docker.internal:3001/post-to-group` |
-   | Sub 2 | `http://host.docker.internal:3002/post-to-group` |
-   | Sub 3 | `http://host.docker.internal:3003/post-to-group` |
-   | Sub 4 | `http://host.docker.internal:3004/post-to-group` |
+   | الـ Sub-workflow | العنوان                                          |
+   | ---------------- | ------------------------------------------------ |
+   | Sub 1            | `http://host.docker.internal:3001/post-to-group` |
+   | Sub 2            | `http://host.docker.internal:3002/post-to-group` |
+   | Sub 3            | `http://host.docker.internal:3003/post-to-group` |
+   | Sub 4            | `http://host.docker.internal:3004/post-to-group` |
 
-5. Activate the workflows.
+5. فعّل الـ workflows.
 
-## Bot API
+## واجهة البوت (API)
 
-`POST /post-to-group` (header `x-api-key`)
+`POST /post-to-group` (الترويسة `x-api-key`)
 
 ```json
 {
   "groupUrl": "https://www.facebook.com/groups/123456789",
-  "title": "Article title",
-  "description": "optional text added under the title",
+  "title": "عنوان المقال",
+  "description": "نص اختياري يُضاف تحت العنوان",
   "imageUrl": "https://your-site.com/wp-content/uploads/2026/10/cover.jpg",
   "wpUrl": "https://your-site.com/my-article/"
 }
 ```
 
-Response: `{ "ok": true, "bot": "bot-1", "groupUrl": "..." }`
-On failure: HTTP 500 with `error` and a `screenshot` path for debugging.
+الاستجابة: `{ "ok": true, "bot": "bot-1", "groupUrl": "..." }`
+عند الفشل: HTTP 500 مع `error` ومسار `screenshot` للتشخيص.
 
-Jobs sent to the same bot are queued and executed **one at a time**.
+الطلبات الموجهة لنفس البوت تُوضع في طابور وتُنفَّذ **واحداً تلو الآخر**.
 
-## Configuration
+## الإعدادات
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `BRAVE_PATH` | – | Path to the Brave executable |
-| `API_KEY` | – | Shared secret between n8n and bots |
-| `BOT_COUNT` | 4 | Number of bots |
-| `BASE_PORT` | 3001 | First port |
-| `MIN_DELAY_MS` / `MAX_DELAY_MS` | 4000 / 12000 | Random human-like pause between actions |
-| `HEADLESS` | false | Run Brave without a window |
+| المتغير                         | الافتراضي    | الوصف                                       |
+| ------------------------------- | ------------ | ------------------------------------------- |
+| `BRAVE_PATH`                    | –            | مسار ملف Brave التنفيذي                     |
+| `API_KEY`                       | –            | سر مشترك بين n8n والبوتات                   |
+| `BOT_COUNT`                     | 4            | عدد البوتات                                 |
+| `BASE_PORT`                     | 3001         | أول منفذ                                    |
+| `MIN_DELAY_MS` / `MAX_DELAY_MS` | 4000 / 12000 | توقف عشوائي يحاكي السلوك البشري بين الخطوات |
+| `HEADLESS`                      | false        | تشغيل Brave بدون نافذة                      |
 
-## Troubleshooting
+## حل المشاكل
 
-- **n8n can't reach the bot** – use `host.docker.internal` (mapped in `docker-compose.yml`) and make sure the bot listens on `0.0.0.0`.
-- **`Target page, context or browser has been closed`** – the profile is already open in another Brave window. Close it.
-- **Selector timeouts** – Facebook changes its UI often. Adjust the role/text patterns in `playwright-bot/server.js` (EN/FR included).
-- **Checkpoint / login screen** – re-run `scripts/first-login.js <bot>`.
+| المشكلة                                           | الحل                                                                                                   |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| n8n لا يصل إلى البوت                              | استعمل `host.docker.internal` (مضبوط في `docker-compose.yml`) وتأكد أن البوت يستمع على `0.0.0.0`       |
+| `Target page, context or browser has been closed` | الملف مفتوح في نافذة Brave أخرى. أغلقها                                                                |
+| انتهاء مهلة الـ selectors                         | واجهة Facebook تتغير كثيراً. عدّل الأنماط في `playwright-bot/server.js` (يوجد دعم للإنجليزية والفرنسية) |
+| صفحة checkpoint أو تسجيل الدخول                   | أعد تشغيل `scripts/first-login.js <bot>`                                                               |
 
-## Responsible use
+## الأمان
 
-This project is a technical demonstration of automation, API integration and multi-process orchestration.
+- لا ترفع أبداً `.env` أو مفاتيح API أو توكنات Telegram أو كلمات السر أو مجلد `playwright-bot/profiles/` (يحتوي جلسات Facebook).
+- راجع كل ملف JSON في `workflows/` قبل الرفع وأزل أي سر أو معرّف خاص (توكنات، Chat IDs، Sheet IDs).
+- ضع قيمة قوية لـ `API_KEY`، ولا تعرّض منافذ البوتات للإنترنت.
 
-- Automating Facebook can violate its Terms of Service and may get accounts restricted. Use test accounts and groups you own or manage, or where you have the admins' permission.
-- Only republish content you own or have a licence to use.
-- Keep the delay settings and respect each group's rules and posting limits.
+## الاستعمال المسؤول
 
-The author is not responsible for misuse.
+هذا المشروع عرض تقني للأتمتة وتكامل الـ APIs والتنسيق بين عدة عمليات.
 
-## Roadmap
+- أتمتة Facebook قد تخالف شروط الخدمة وقد تؤدي إلى تقييد الحسابات. استعمل حسابات تجريبية ومجموعات تملكها أو تديرها أو حصلت على إذن مشرفيها.
+- أعد نشر المحتوى الذي تملكه أو لديك ترخيص باستعماله فقط.
+- أبقِ إعدادات التأخير، والتزم بقواعد كل مجموعة وحدود النشر فيها.
 
-- [ ] Per-group daily caps and cool-down stored in Google Sheets
-- [ ] Docker image for the bots
-- [ ] Dashboard (run history, success rate)
-- [ ] Retry with exponential back-off
+المؤلف غير مسؤول عن سوء الاستعمال.
 
-## License
+## خارطة الطريق
 
-MIT
+- [ ] حد يومي وفترة انتظار لكل مجموعة يُخزَّنان في Google Sheets
+- [ ] صورة Docker للبوتات
+- [ ] لوحة متابعة (سجل التشغيل، نسبة النجاح)
+- [ ] إعادة المحاولة بتأخير تصاعدي
+
+## الرخصة
+
+المشروع مرخص بموجب [رخصة MIT](LICENSE).
