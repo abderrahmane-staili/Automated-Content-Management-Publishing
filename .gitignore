@@ -1,1 +1,8 @@
-
+node_modules/
+.env
+playwright-bot/profiles/
+playwright-bot/screenshots/
+playwright-bot/tmp/
+n8n_data/
+*.log
+.DS_Store
