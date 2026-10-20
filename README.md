@@ -1,3 +1,5 @@
+**English** | [العربية](README.ar.md)
+
 # n8n + Playwright: WordPress → Facebook Groups Automation
 
 A portfolio project that shows how to chain **n8n**, **REST APIs**, **Google Sheets** and
