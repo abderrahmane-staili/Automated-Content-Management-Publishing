@@ -1,0 +1,2664 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs",
+          "mode": "list",
+          "cachedResultName": "n8n-architect-blogin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2132534980,
+          "mode": "list",
+          "cachedResultName": "fays",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit#gid=2132534980"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        6736,
+        4816
+      ],
+      "id": "c9cafd69-d126-47ff-bd7f-5440bc110b00",
+      "name": "sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jrUYZ2Yv7SlOEnnI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "638a5413-6962-4582-8d8e-9fc2afaae4c7",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "17f67d21-f468-436a-a545-75da44f4813f",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "33f2777c-64fd-49b3-a64c-8835f9e56d99",
+              "name": "link",
+              "value": "={{ $json.comment }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        7024,
+        5008
+      ],
+      "id": "a9948ab8-6692-460c-8fed-ccd3eeba0caa",
+      "name": "take the items"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst newItems = [];\n\nfor (let item of items) {\n  const htmlContent = item.json.data || \"\";\n  \n  const titleMatch = htmlContent.match(/<title>([^<]+)<\\/title>/);\n  let rawTitle = titleMatch ? titleMatch[1] : \"empty\";\n  \n  const cleanTitle = rawTitle\n    .split(/&#8211;|–|-/)[0]\n    .replace(/&#8217;|&#8216;|&rsquo;|&lsquo;/g, \"'\")\n    .replace(/&amp;/g, \"&\")\n    .replace(/&#\\d+;/g, \"\")\n    .trim();\n\n  const viewMatch = htmlContent.match(/class=\"post-views-count\"[^>]*>(\\d+)</);\n  const nodeValue = viewMatch ? parseInt(viewMatch[1], 10) : null;\n  \n  if (nodeValue !== null && nodeValue > 300) {\n    newItems.push({\n      json: {\n        postId: item.json.id || null,\n        title: cleanTitle,\n        nodeValue: nodeValue\n      }\n    });\n  }\n}\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7344,
+        5008
+      ],
+      "id": "ffa3e882-10cb-4e85-ba07-a41272c3c879",
+      "name": "Vu-s"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "nybCPR3zKosNW8oH",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/nybCPR3zKosNW8oH",
+          "cachedResultName": "Sub 1"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        5760,
+        4688
+      ],
+      "id": "38dd41f7-1aed-4109-9ae8-5fd330e7d4db",
+      "name": "sub 1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "rM54JqItdWmaARpo",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/rM54JqItdWmaARpo",
+          "cachedResultName": "Sub 2"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        5760,
+        4864
+      ],
+      "id": "2daab273-ed21-4d77-bf13-5cda5270fc92",
+      "name": "Sub 2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"101\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        5392
+      ],
+      "id": "c8e4bf80-2c8c-4338-a656-8b6b18f58885",
+      "name": "101-1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"111\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        4032
+      ],
+      "id": "2db845cc-50d5-472d-b406-2b6fc97be8c8",
+      "name": "111-2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"222\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        4176
+      ],
+      "id": "bb74dca1-be16-44ef-a61a-54d2233f4561",
+      "name": "222-2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"333\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        4320
+      ],
+      "id": "e73794bb-e996-4d21-99a5-10c2565f5302",
+      "name": "333-2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"444\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        4464
+      ],
+      "id": "e1a12973-4e75-44a3-a427-cd6544fe57d3",
+      "name": "444-2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"555\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        4608
+      ],
+      "id": "05b44580-7ff5-4632-8e6b-f06852977c84",
+      "name": "555-2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"666\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        4768
+      ],
+      "id": "0554873e-bc30-4192-bdf6-da69fa0c8c1e",
+      "name": "666-2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"777\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        4912
+      ],
+      "id": "a50b4479-09ff-403b-b4a6-232285286bc1",
+      "name": "777-2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"888\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        5072
+      ],
+      "id": "85f563ca-82e6-4c35-a536-47e0a61c53e1",
+      "name": "888-2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05178f6e-d0fd-44fa-8d2e-248dd8e0b2c7",
+              "name": "id",
+              "value": "={{\"999\" + $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "49b43284-c011-4ed5-a908-030ea220ed32",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "f05dcb17-1f91-4a76-8b55-eae20b84b69d",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "88f086a7-60cf-4e3d-8867-10a83c62e3a1",
+              "name": "content.rendered",
+              "value": "={{ $json.content.rendered }}",
+              "type": "string"
+            },
+            {
+              "id": "d3225fef-09b5-41b2-b735-bd6078a37b23",
+              "name": "title.rendered",
+              "value": "={{ $json.title.rendered }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4176,
+        5232
+      ],
+      "id": "0e8a82a3-1918-42f3-9cee-be485ff3457c",
+      "name": "999-2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "53e9e4e2-9bf0-45f6-bbb8-58480020f9d7",
+              "name": "test_dev",
+              "value": "={{ $json.test_dev }}",
+              "type": "string"
+            },
+            {
+              "id": "9105f790-1138-42a2-8875-eae1be3651da",
+              "name": "post_title",
+              "value": "={{ $json.post_title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        5984,
+        4096
+      ],
+      "id": "52c7700a-682a-4b35-bb75-1911d6ea93fa",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        3408,
+        4496
+      ],
+      "id": "ffdc2071-40c2-4da3-9ef6-1cfe7e1cb51a",
+      "name": "Schedule Trigger6"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction extractId(item) {\n  if (!item || !item.json) return null;\n  \n  const keys = Object.keys(item.json);\n  const idKey = keys.find(k => k.trim().toLowerCase() === 'id');\n  \n  if (idKey && item.json[idKey] !== undefined && item.json[idKey] !== null) {\n    return String(item.json[idKey]).trim();\n  }\n  \n  return null;\n}\n\nconst allIds = items\n  .map(item => extractId(item))\n  .filter(id => id !== null && id !== '');\n\nconst idsText = allIds.join(', ');\n\nreturn [\n  {\n    json: {\n      all_ids_text: idsText,\n      total_rows: allIds.length\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4176,
+        3872
+      ],
+      "id": "3bffbd7a-e913-4a46-92ea-ab91441e1e78",
+      "name": "filter2"
+    },
+    {
+      "parameters": {
+        "content": "## FILTER",
+        "height": 176,
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3840,
+        3840
+      ],
+      "id": "5db60506-fe9b-43a0-bc58-4ea866f68713",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n    let rawContent = '';\n    if (typeof item.json.post_content === 'object' && item.json.post_content !== null) {\n        rawContent = item.json.post_content.rendered || '';\n    } else {\n        rawContent = item.json.post_content || item.json.content || '';\n    }\n\n    const allHtml = item.json.all_html || '';\n    let imageUrl = item.json.extracted_img_url || '';\n\n    if ((!imageUrl || !imageUrl.startsWith('http')) && allHtml) {\n        const imgMatch = allHtml.match(/<img[^>]+src=[\"']([^\"']+)[\"']/i);\n        if (imgMatch) {\n            imageUrl = imgMatch[1];\n        }\n    }\n\n    const imgTag = imageUrl ? `<p><img src=\"${imageUrl}\" class=\"aligncenter size-full\" /></p>\\n` : '';\n\n    let cleanContent = rawContent.replace(/<ins[^>]*>[\\s\\S]*?<\\/ins>/gi, '').trim();\n\n    const paragraphs = cleanContent.split(/(<\\/p>|\\n)/i);\n\n    let formattedContent = '';\n    let currentLength = 0;\n    let pageCount = 1;\n    const maxChars = 2000;\n\n    if (imgTag && !cleanContent.includes(imageUrl)) {\n        formattedContent += imgTag;\n    }\n\n    for (let i = 0; i < paragraphs.length; i++) {\n        let chunk = paragraphs[i];\n        formattedContent += chunk;\n        currentLength += chunk.length;\n\n        if (currentLength >= maxChars && (chunk.includes('</p>') || chunk.includes('.'))) {\n            if (i < paragraphs.length - 1) {\n                formattedContent += `\\n<!--nextpage-->\\n${imgTag}`;\n                currentLength = 0; \n                pageCount++;\n            }\n        }\n    }\n\n    return {\n        json: {\n            ...item.json,\n            test_dev: formattedContent,\n            total_pages: pageCount\n        }\n    };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5760,
+        4128
+      ],
+      "id": "7b1a4f77-ff31-4c24-897d-962bfe9b396a",
+      "name": "test-dev2",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://guide.recipes24min.online/?wpwhpro_action=main_2972&wpwhpro_api_key=uknph9lpcrquvca45is609b3qondo44tcg6jv8bsl2mtqbtaggcpadljag21vtaz",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "action",
+              "value": "create_post"
+            },
+            {
+              "name": "post_content",
+              "value": "={{ $json.test_dev }}"
+            },
+            {
+              "name": "post_status",
+              "value": "publish"
+            },
+            {
+              "name": "post_type",
+              "value": "post"
+            },
+            {
+              "name": "post_title",
+              "value": "={{ $json.post_title }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        6560,
+        4080
+      ],
+      "id": "bb39f4de-7ac5-490c-a475-34aeefb447ab",
+      "name": "HTTP Request8",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1LYtPkDYLq2j0Y7Y",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs",
+          "mode": "list",
+          "cachedResultName": "n8n-architect-blogin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1519271658,
+          "mode": "list",
+          "cachedResultName": "blog-get",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit#gid=1519271658"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.ID }}",
+            "date": "={{ $json.post_date }}",
+            "url": "={{ $json.post_url }}",
+            "title": "={{ $json.post_title }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        5984,
+        3952
+      ],
+      "id": "5770dad6-fd4a-4428-be7e-98da77112fdb",
+      "name": "Append2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jrUYZ2Yv7SlOEnnI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs",
+          "mode": "list",
+          "cachedResultName": "n8n-architect-blogin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1519271658,
+          "mode": "list",
+          "cachedResultName": "blog-get",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit#gid=1519271658"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3904,
+        3872
+      ],
+      "id": "04ad6658-f3bb-4818-b385-182e7d944870",
+      "name": "Get row(s) in sheet9",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jrUYZ2Yv7SlOEnnI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const postId = item.json.post_id || item.json.data?.post_id;\n  \n  if (postId) {\n    item.json.local_image_path = `C:/Users/dell/Desktop/image-downloader/${postId}.jpg`;\n  }\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7136,
+        4304
+      ],
+      "id": "6dde27ec-957f-4945-998d-d0d7afbef247",
+      "name": "Code in JavaScript60"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const content = item.json?.data?.post_data?.post_content \n               || item.json?.post_content \n               || item.json?.description \n               || '';\n  \n  const matches = [...content.matchAll(/<img[^>]+src=[\"']([^\"']+)[\"']/gi)];\n  \n  const mainImage = matches\n    .map(m => m[1])\n    .find(url => !url.includes('gravatar.com') && !url.includes('avatar'));\n  \n  item.json.extracted_img_url = mainImage || null;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6752,
+        4080
+      ],
+      "id": "61122325-2054-4278-8168-5bb34a82267c",
+      "name": "Code in JavaScript61"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.extracted_img_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        7136,
+        3984
+      ],
+      "id": "aac90717-cb56-4537-8f39-36ffe2ed4a3e",
+      "name": "HTTP Request20",
+      "onError": "continueErrorOutput",
+      "notes": "error"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const postId = item.json.post_id || item.json.data?.post_id || 'image';\n\n  if (item.binary && item.binary.data) {\n\n    item.binary.data.fileName = `${postId}.jpg`;\n    item.binary.data.fileExtension = 'jpg';\n    item.binary.data.mimeType = 'image/jpeg';\n  }\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7648,
+        3968
+      ],
+      "id": "b605d759-54d1-401c-bffe-eb4c959f5152",
+      "name": "Code in JavaScript62"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        8240,
+        4064
+      ],
+      "id": "2dea4401-1e46-4a79-a59b-44400257eb10",
+      "name": "Merge8"
+    },
+    {
+      "parameters": {
+        "jsCode": "function fixTitleEntities(text) {\n  if (!text) return '';\n  \n  return String(text)\n    .replace(/&#8230;/g, '…')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&quot;/g, '\"')\n    .replace(/&#039;/g, \"'\")\n    .replace(/&#(\\d+);/g, (match, dec) =>\n      String.fromCharCode(dec));\n}\n\nfor (const item of $input.all()) {\n  if (item.json.title) {\n    item.json.title = fixTitleEntities(item.json.title);\n  }\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7312,
+        4304
+      ],
+      "id": "78c9d90b-ffcd-45a3-9c20-92a14312490c",
+      "name": "Code in JavaScript63"
+    },
+    {
+      "parameters": {
+        "jsCode": "const firstTenItems = $input.all().slice(0, 30);\n\nreturn firstTenItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5072,
+        4128
+      ],
+      "id": "ba95edcb-3ce0-4232-bb9d-5f4664803457",
+      "name": "only 15 items2"
+    },
+    {
+      "parameters": {
+        "content": "## Data Storage",
+        "height": 464,
+        "width": 1360,
+        "color": "#303030"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4864,
+        3888
+      ],
+      "id": "d2d884c2-6e8c-4765-864c-c253c4f51645",
+      "name": "Sticky Note15"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction extractId(item) {\n  if (!item || !item.json) return null;\n  \n  const keys = Object.keys(item.json);\n  const idKey = keys.find(k => k.trim().toLowerCase() === 'id');\n  \n  if (idKey && item.json[idKey] !== undefined && item.json[idKey] !== null) {\n    return String(item.json[idKey]).trim();\n  }\n  \n  return null;\n}\n\nconst allIds = items\n  .map(item => extractId(item))\n  .filter(id => id !== null && id !== '');\n\nconst idsText = allIds.join(', ');\n\nreturn [\n  {\n    json: {\n      all_ids_text: idsText,\n      total_rows: allIds.length\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5184,
+        4000
+      ],
+      "id": "e0178dd5-2f59-44d5-8887-f40af7f823a5",
+      "name": "ID's2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const posts = $('Merge13').all();\n\nconst idsData = $('filter2').first()?.json || {};\nconst idsText = String(idsData.all_ids_text || '');\n\nconst existingIds = new Set(\n  idsText\n    .split(',')\n    .map(id => id.trim())\n    .filter(Boolean)\n);\n\nconst filteredPosts = posts.filter(post => {\n  const pId = String(post.json?.id || post.json?.ID || '').trim();\n  \n  if (!pId) return false;\n  \n  return !existingIds.has(pId);\n});\n\nreturn filteredPosts;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4880,
+        4128
+      ],
+      "id": "2bed7c81-4a56-4719-8568-ef694f2b5409",
+      "name": "Filter IDs2",
+      "notes": "const items = $input.all();\n\nconst oldIds = [];\nconst newPosts = [];\n\nfor (const item of items) {\n  if (item.json.id) {\n    oldIds.push(String(item.json.id));\n  }\n}\n\nfor (const item of items) {\n  if (item.json.title && item.json.description) {\n    newPosts.push(item.json);\n  }\n}\n\nconst uniqueOldIds = [...new Set(oldIds)];\n\nreturn newPosts\n  .filter(post => !uniqueOldIds.includes(String(post.id)))\n  .map(post => ({\n    json: post\n  }));"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst originalPosts = $('only 15 items2').all();\n\nreturn items.map((item, index) => {\n  const html = item.json.data || '';\n  const post = originalPosts[index]?.json || {};\n  \n  const ogMatch = html.match(/<meta[^>]+property=[\"']og:image[\"'][^>]+content=[\"']([^\"']+)[\"']/i) \n               || html.match(/<meta[^>]+content=[\"']([^\"']+)[\"']+property=[\"']og:image[\"']/i);\n  const imgMatch = html.match(/<img[^>]+src=[\"']([^\"']+)[\"']/i);\n  const foundImage = ogMatch ? ogMatch[1] : (imgMatch ? imgMatch[1] : '');\n\n  let fullArticleHtml = '';\n  \n  const articleContentMatch = html.match(/<article[^>]*>([\\s\\S]*?)<\\/article>/i)\n                           || html.match(/<div[^>]+class=[\"'][^\"']*(?:entry-content|post-content|article-body)[^\"']*[\"'][^>]*>([\\s\\S]*?)<\\/div>/i);\n\n  if (articleContentMatch) {\n    fullArticleHtml = articleContentMatch[1];\n  } else {\n    const extractedBlocks = html.match(/<(p|h1|h2|h3|h4|div class=\"entry-content\")[^>]*>[\\s\\S]*?<\\/\\1>/gi) || [];\n    fullArticleHtml = extractedBlocks.join('\\n');\n  }\n\n  fullArticleHtml = fullArticleHtml\n    .replace(/<ins[^>]*>[\\s\\S]*?<\\/ins>/gi, '')\n    .replace(/<script[^>]*>[\\s\\S]*?<\\/script>/gi, '')\n    .replace(/<iframe[^>]*>[\\s\\S]*?<\\/iframe>/gi, '')\n    .replace(/<div[^>]+class=[\"'][^\"']*google-anno[^\"']*[\"'][^>]*>[\\s\\S]*?<\\/div>/gi, '')\n    .trim();\n\n  if (foundImage && !fullArticleHtml.includes(foundImage)) {\n    fullArticleHtml = `<p><img src=\"${foundImage}\" alt=\"\" /></p>\\n` + fullArticleHtml;\n  }\n\n  return {\n    json: {\n      ID: post.ID || post.id || null,\n      post_title: post.post_title || post.title?.rendered || post.title || '',\n      post_url: post.post_url || post.link || '',\n      post_date: post.post_date || post.date || '',\n      post_content: post.post_content || post.content || '',\n      extracted_img_url: foundImage,\n      all_html: fullArticleHtml\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5552,
+        4128
+      ],
+      "id": "a720557a-35a1-4455-9b7c-83a220028604",
+      "name": "Data2"
+    },
+    {
+      "parameters": {
+        "chatId": "6892503934",
+        "text": "=error test-dev\nerror test-dev",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        5984,
+        4256
+      ],
+      "id": "430cfcd9-b34b-40d4-9ada-4d6f3d761090",
+      "name": "send10",
+      "webhookId": "1affb122-d7a6-4c51-a293-0376b5494696",
+      "credentials": {
+        "telegramApi": {
+          "id": "mpJx1GY5b13PpKua",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://quick.recipes24min.online/wp-json/wp/v2/posts?per_page=40",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        4464
+      ],
+      "id": "38913753-5714-46f8-8bf1-a9f3eae74ada",
+      "name": "Quick-sub2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.4-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5.4-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert Facebook viral copywriter.\n\nYOUR GOAL:\nTransform the input article title into a short, sensational, highly engaging Facebook clickbait headline.\n\nRULES:\n1. Keep it intriguing and suspenseful.\n2. Add 2-3 relevant emojis.\n3. STRICTLY end the headline with: 👇 See comment for more!\n4. Output ONLY the final updated headline text. Do not include extra quotes, explanations, or system messages.",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.title }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        7520,
+        4208
+      ],
+      "id": "97042703-d56a-4cc4-b26b-1b7a960efae4",
+      "name": "Generate Viral Title5",
+      "credentials": {
+        "openAiApi": {
+          "id": "pPUmz9DqVW1Cainf",
+          "name": "ABDERRAHMANE--OFFIC"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item, index) => {\n  const original = $('Code in JavaScript63').all()[index].json;\n  return {\n    json: {\n      ...original,\n      generated_title: item.json.message.content\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7824,
+        4208
+      ],
+      "id": "1c82b394-1504-4e1b-8d34-678c9c50f60d",
+      "name": "rrrr3"
+    },
+    {
+      "parameters": {
+        "content": "## AI\n",
+        "width": 464,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        7488,
+        4176
+      ],
+      "id": "8747ebff-e8b8-4293-844d-478e052d2142",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "numberInputs": 10
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4592,
+        4400
+      ],
+      "id": "e7a24085-139f-4dda-9063-6e627cffecb9",
+      "name": "Merge11"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        6336,
+        3968
+      ],
+      "id": "0ee11bfa-6c84-4129-a6dc-92f1e71fcc5c",
+      "name": "Loop Over Items3"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/files/{{$binary.data.fileName}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        8000,
+        3968
+      ],
+      "id": "5e908e3e-8473-4aa3-a438-ac0b45fbde03",
+      "name": "Read/Write Files from Disk3"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        8544,
+        3744
+      ],
+      "id": "e04d4766-c29e-4d99-ba7f-25ecc5e14d68",
+      "name": "Wait3",
+      "webhookId": "a0a3c459-9dd5-4a76-a49d-6d406432a52e"
+    },
+    {
+      "parameters": {
+        "chatId": "6892503934",
+        "text": "={{ $json.profile }}\n{{ $json.postStatus }}\n{{ $json.commentStatus }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        7360,
+        4048
+      ],
+      "id": "8336144e-6bb6-42cf-95b1-e1d06b3d32ff",
+      "name": "send18",
+      "webhookId": "1affb122-d7a6-4c51-a293-0376b5494696",
+      "credentials": {
+        "telegramApi": {
+          "id": "mpJx1GY5b13PpKua",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        5360,
+        4128
+      ],
+      "id": "fad62262-4871-4375-b4a1-37104285f261",
+      "name": "HTTP Request21"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8b6a34e8-ea2f-4826-8e18-751895dd3769",
+              "name": "url-rticle",
+              "value": "={{ $json.data.permalink }}",
+              "type": "string"
+            },
+            {
+              "id": "784c7799-7b4c-4034-88e9-e43e44b81cf6",
+              "name": "title",
+              "value": "={{ $json.data.post_data.post_title }}",
+              "type": "string"
+            },
+            {
+              "id": "be0c58b2-e024-4937-97d2-dfc022e4b545",
+              "name": "data.post_id",
+              "value": "={{ $json.data.post_id }}",
+              "type": "number"
+            },
+            {
+              "id": "68969b50-e3b5-4fef-b148-d08b82c48252",
+              "name": "data.permalink",
+              "value": "={{ $json.data.permalink }}",
+              "type": "string"
+            },
+            {
+              "id": "3a774164-31c0-4968-a2c7-5cbb7861c377",
+              "name": "extracted_img_url",
+              "value": "={{ $json.extracted_img_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        6928,
+        4080
+      ],
+      "id": "92973dfd-7e94-472b-b268-b964e2449c5e",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs",
+          "mode": "list",
+          "cachedResultName": "n8n-architect-blogin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2132534980,
+          "mode": "list",
+          "cachedResultName": "fays",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit#gid=2132534980"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "comment": "={{ $json['url-rticle'] }}",
+            "id": "={{ $json.data.post_id }}",
+            "image": "={{ $json.local_image_path }}",
+            "title": "={{ $json.generated_title }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "comment",
+              "displayName": "comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        7808,
+        4400
+      ],
+      "id": "9b065379-623c-4cec-8b77-90ce59e035c3",
+      "name": "Append row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jrUYZ2Yv7SlOEnnI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "\n\n## GET A NEW POSTS 📑📃🟢🟩",
+        "height": 336,
+        "width": 368,
+        "color": "#2A4B1B"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3152,
+        4320
+      ],
+      "id": "40fc20b2-c123-4300-9d63-8fa48bd87a3f",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        6480,
+        4912
+      ],
+      "id": "c59c466e-22bb-462f-b2ee-2d30d414c1ba",
+      "name": "Schedule Trigger7"
+    },
+    {
+      "parameters": {
+        "numberInputs": 9
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4592,
+        4880
+      ],
+      "id": "534c0a7d-966d-4f56-a7f2-f925cba5bba2",
+      "name": "Merge12"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4848,
+        4656
+      ],
+      "id": "1103ea00-74f2-4da1-ac45-cf3bbcf684c4",
+      "name": "Merge13"
+    },
+    {
+      "parameters": {
+        "url": "https://nice.recipes24min.online/wp-json/wp/v2/posts?per_page=40",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        5392
+      ],
+      "id": "22e24b4f-271c-435e-afd4-8eb8f1cb5fe4",
+      "name": "Nice Sub1"
+    },
+    {
+      "parameters": {
+        "url": "https://recent.recipes24min.online/wp-json/wp/v2/posts?per_page=40",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        4608
+      ],
+      "id": "b43fbcac-e365-4bc9-8886-db18374529bd",
+      "name": "Recent Sub1"
+    },
+    {
+      "parameters": {
+        "url": "https://pro.recipes24min.online/wp-json/wp/v2/posts?per_page=40",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        4768
+      ],
+      "id": "80dac33b-d8b2-4bfc-9975-791aaa74233a",
+      "name": "Pro-sub1"
+    },
+    {
+      "parameters": {
+        "url": "https://blog.recipes24min.online/wp-json/wp/v2/posts?per_page=100",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        4912
+      ],
+      "id": "0d64c844-eb02-4591-a333-b5bc8ceb5c46",
+      "name": "Blog-sub1"
+    },
+    {
+      "parameters": {
+        "url": "https://forum.recipes24min.online/wp-json/wp/v2/posts?per_page=40",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        5072
+      ],
+      "id": "be0b53bc-deec-4397-bb0b-c3562ba0c309",
+      "name": "Forum-sub1"
+    },
+    {
+      "parameters": {
+        "url": "https://taste.gpspain.com/wp-json/wp/v2/posts?per_page=30",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        5232
+      ],
+      "id": "4c3bc398-e816-40dd-9853-48c10bfd22be",
+      "name": "Taste Sub1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        7168,
+        5008
+      ],
+      "id": "e33e7613-e476-434b-acf5-974e610f93e9",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        7728,
+        4832
+      ],
+      "id": "625f25e7-c23f-4bce-8f97-9db1da022cca",
+      "name": "Merge14"
+    },
+    {
+      "parameters": {
+        "jsCode": "const sheetItems = $input.all();\nconst js3Items = $('Vu-s').all();\n\nfunction cleanTitleText(text) {\n  if (!text) return \"\";\n  return text.toString()\n    .toLowerCase()\n    .replace(/[^\\w\\s]/gi, '') // كيحيد جميع الرموز والنقاط والإيموجي\n    .replace(/\\s+/g, ' ')     // كيجمع الفراغات المتعددة في فراغ واحد\n    .trim();\n}\n\nconst titleToViewsMap = new Map();\nfor (const js3 of js3Items) {\n  if (js3.json.title) {\n    const cleaned = cleanTitleText(js3.json.title);\n    titleToViewsMap.set(cleaned, js3.json.nodeValue);\n  }\n}\n\nconst newItems = [];\nconst processedTitles = new Set();\n\nfor (const item of sheetItems) {\n  if (!item.json.title) continue;\n  \n  const cleanedSheetTitle = cleanTitleText(item.json.title);\n  \n  if (titleToViewsMap.has(cleanedSheetTitle) && !processedTitles.has(cleanedSheetTitle)) {\n    processedTitles.add(cleanedSheetTitle);\n    newItems.push({\n      json: {\n        row_number: item.json.row_number,\n        id: item.json.id,\n        title: item.json.title,\n        image: item.json.image,\n        comment: item.json.comment,\n        nodeValue: titleToViewsMap.get(cleanedSheetTitle),\n        postId: item.json.postId || null\n      }\n    });\n  }\n}\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8112,
+        4960
+      ],
+      "id": "956732be-84c6-4cd6-8867-f37ae3378ed1",
+      "name": "Code in JavaScript8"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs",
+          "mode": "list",
+          "cachedResultName": "n8n-architect-blogin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 595744348,
+          "mode": "list",
+          "cachedResultName": "Best-Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit#gid=595744348"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "title": "={{ $json.title }}",
+            "image": "={{ $json.image }}",
+            "comment": "={{ $json.comment }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "comment",
+              "displayName": "comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        8320,
+        4960
+      ],
+      "id": "17d8aab9-d4a2-4f9b-a2c6-2659471e7c94",
+      "name": "Append row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jrUYZ2Yv7SlOEnnI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## only this 3 nodes thes are working",
+        "height": 240,
+        "width": 336,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5136,
+        4848
+      ],
+      "id": "a2eb63a0-0a18-42dc-9c7d-edc237703ec1",
+      "name": "Sticky Note16"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        5360,
+        4944
+      ],
+      "id": "3cf24374-d34d-4a72-822e-26720250c7d3",
+      "name": "Schedule Trigger8"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "XeAVtz0AAlBT98pu",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/XeAVtz0AAlBT98pu",
+          "cachedResultName": "Sub 4"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        5760,
+        5216
+      ],
+      "id": "8814df6d-117e-442c-b6bb-7efbbc95ba0e",
+      "name": "Sub 5"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ralrzSTKBiGw8gns",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ralrzSTKBiGw8gns",
+          "cachedResultName": "Sub 3"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        5760,
+        5040
+      ],
+      "id": "0b85f4ba-6de0-4603-aa59-23f8a6d9a44c",
+      "name": "Sub 6"
+    },
+    {
+      "parameters": {
+        "content": "## ok",
+        "height": 96,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5600,
+        4688
+      ],
+      "typeVersion": 1,
+      "id": "50c61c9a-8344-4c45-9f64-b1f5cce009f0",
+      "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
+        "url": "https://all-recipes.arbweb.info/wp-json/wp/v2/posts?per_page=50",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "{{ $now.minus({ days: 2 }).toISOString() }}",
+              "value": "2026-08-12T17:14:4"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        4320
+      ],
+      "id": "9ea5c806-779b-4682-b0ca-6d77257d8782",
+      "name": "All-sub"
+    },
+    {
+      "parameters": {
+        "url": "https://trendy.recipes24min.online/wp-json/wp/v2/posts?per_page=70",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        4032
+      ],
+      "id": "6c00101c-0704-42c6-8974-44c74070b5f1",
+      "name": "trendy-syb"
+    },
+    {
+      "parameters": {
+        "url": "https://good.recipes24min.online/wp-json/wp/v2/posts?per_page=60",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "{{ $now.minus({ days: 2 }).toISOString() }}",
+              "value": "2026-08-12T17:14:4"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3920,
+        4176
+      ],
+      "id": "cb684eaf-9aac-45bd-b60a-a6d7e0ce7001",
+      "name": "good-sub"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs",
+          "mode": "list",
+          "cachedResultName": "n8n-architect-blogin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2132534980,
+          "mode": "list",
+          "cachedResultName": "fays",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit#gid=2132534980"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        6704,
+        5008
+      ],
+      "id": "2029a482-c37d-4573-af1b-64875e96e0e0",
+      "name": "sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jrUYZ2Yv7SlOEnnI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const firstTenItems = $input.all().slice(0, 700);\n\nreturn firstTenItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6864,
+        5008
+      ],
+      "id": "523943bf-04f7-4045-9953-aec95c818a86",
+      "name": "only 15 items"
+    },
+    {
+      "parameters": {
+        "content": "## FILTRING POSTS",
+        "height": 480,
+        "width": 2176,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6304,
+        4768
+      ],
+      "id": "b9dde6d2-20f6-472b-9ded-a7a4e66e1d5d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## ok",
+        "height": 96,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5600,
+        4864
+      ],
+      "typeVersion": 1,
+      "id": "fd234de6-a9cc-4bbf-ae2a-25deea88d8bd",
+      "name": "Sticky Note19"
+    },
+    {
+      "parameters": {
+        "content": "## ok",
+        "height": 96,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5600,
+        5040
+      ],
+      "typeVersion": 1,
+      "id": "bdd1fc9c-c6bc-4aae-91a2-eee1748488fb",
+      "name": "Sticky Note21"
+    },
+    {
+      "parameters": {
+        "content": "## ok",
+        "height": 96,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5600,
+        5216
+      ],
+      "typeVersion": 1,
+      "id": "4bd63cd8-30a1-480a-9845-4bedaf79fd2c",
+      "name": "Sticky Note22"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction extractId(item) {\n  if (!item || !item.json) return null;\n  \n  const keys = Object.keys(item.json);\n  const idKey = keys.find(k => k.trim().toLowerCase() === 'id');\n  \n  if (idKey && item.json[idKey] !== undefined && item.json[idKey] !== null) {\n    return String(item.json[idKey]).trim();\n  }\n  \n  return null;\n}\n\nconst allIds = items\n  .map(item => extractId(item))\n  .filter(id => id !== null && id !== '');\n\nconst idsText = allIds.join(', ');\n\nreturn [\n  {\n    json: {\n      all_ids_text: idsText,\n      total_rows: allIds.length\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7040,
+        4880
+      ],
+      "id": "03ada757-1484-400a-b02a-9a034524c713",
+      "name": "filter"
+    }
+  ],
+  "connections": {
+    "sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "take the items": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vu-s": {
+      "main": [
+        [
+          {
+            "node": "Merge14",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "101-1": {
+      "main": [
+        [
+          {
+            "node": "Merge12",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "111-2": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "222-2": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 8
+          }
+        ]
+      ]
+    },
+    "333-2": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    },
+    "444-2": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 9
+          }
+        ]
+      ]
+    },
+    "555-2": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "666-2": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "777-2": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "888-2": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "999-2": {
+      "main": [
+        [
+          {
+            "node": "Merge12",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger6": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet9",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "trendy-syb",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "good-sub",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Forum-sub1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Blog-sub1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Taste Sub1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Quick-sub2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "All-sub",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Pro-sub1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Recent Sub1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Nice Sub1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter2": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "test-dev2": {
+      "main": [
+        [
+          {
+            "node": "Append2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript61",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet9": {
+      "main": [
+        [
+          {
+            "node": "filter2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript60": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript63",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript61": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request20": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript62",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript62": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge8": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript63": {
+      "main": [
+        [
+          {
+            "node": "Generate Viral Title5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "only 15 items2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request21",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter IDs2": {
+      "main": [
+        [
+          {
+            "node": "ID's2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "only 15 items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data2": {
+      "main": [
+        [
+          {
+            "node": "test-dev2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quick-sub2": {
+      "main": [
+        [
+          {
+            "node": "444-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Viral Title5": {
+      "main": [
+        [
+          {
+            "node": "rrrr3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rrrr3": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge11": {
+      "main": [
+        [
+          {
+            "node": "Merge13",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk3": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request21": {
+      "main": [
+        [
+          {
+            "node": "Data2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request20",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript60",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger7": {
+      "main": [
+        [
+          {
+            "node": "sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge12": {
+      "main": [
+        [
+          {
+            "node": "Merge13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge13": {
+      "main": [
+        [
+          {
+            "node": "Filter IDs2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nice Sub1": {
+      "main": [
+        [
+          {
+            "node": "101-1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recent Sub1": {
+      "main": [
+        [
+          {
+            "node": "555-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pro-sub1": {
+      "main": [
+        [
+          {
+            "node": "666-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blog-sub1": {
+      "main": [
+        [
+          {
+            "node": "777-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forum-sub1": {
+      "main": [
+        [
+          {
+            "node": "888-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Taste Sub1": {
+      "main": [
+        [
+          {
+            "node": "999-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Vu-s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge14": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript8": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger8": {
+      "main": [
+        [
+          {
+            "node": "sub 1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Sub 2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Sub 6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Sub 5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "All-sub": {
+      "main": [
+        [
+          {
+            "node": "333-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "trendy-syb": {
+      "main": [
+        [
+          {
+            "node": "111-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "good-sub": {
+      "main": [
+        [
+          {
+            "node": "222-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sheet1": {
+      "main": [
+        [
+          {
+            "node": "only 15 items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "only 15 items": {
+      "main": [
+        [
+          {
+            "node": "take the items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter": {
+      "main": [
+        [
+          {
+            "node": "Merge14",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "500acbc15071f27dd48d1ec68955f9a2da0e93e5405945678b09708cd048df90"
+  }
+}
