@@ -1,0 +1,738 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        1104,
+        592
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueErrorOutput",
+      "notes": "error sub 2"
+    },
+    {
+      "parameters": {
+        "chatId": "6892503934",
+        "text": "={{ $json.profile }}\n{{ $json.postStatus }}\n{{ $json.commentStatus }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3104,
+        480
+      ],
+      "id": "cc31a6da-c5e2-4bc7-91cc-8307a64a1182",
+      "name": "send1",
+      "webhookId": "1affb122-d7a6-4c51-a293-0376b5494696",
+      "credentials": {
+        "telegramApi": {
+          "id": "mpJx1GY5b13PpKua",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs",
+          "mode": "list",
+          "cachedResultName": "n8n-architect-blogin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 595744348,
+          "mode": "list",
+          "cachedResultName": "Best-Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NIG-9pHyq5a4Hqzkk5UiKTnsFEgkfFofs3QJ4E2nEHs/edit#gid=595744348"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        352
+      ],
+      "id": "89e3407d-a7ef-4b0c-bf5f-3fcae8371ecf",
+      "name": "Get row(s) in sheet5",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jrUYZ2Yv7SlOEnnI",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3696,
+        400
+      ],
+      "id": "0c8aaca4-15f2-46e9-b909-e9a4196595be",
+      "name": "Merge8"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3440,
+        128
+      ],
+      "id": "105dd2ea-083f-4ef1-90e1-c99c22a47440",
+      "name": "Code in JavaScript36"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1696,
+        352
+      ],
+      "id": "b9054fc4-7060-4947-9f40-5d80635c761a",
+      "name": "Loop 1",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  return {\n    json: {\n      row_number: item.json.row_number || null,\n      title: item.json.title ? item.json.title.replace(/[\\r\\n]+/g, \" \").trim() : \"\",\n      imagePath: item.json.image ? item.json.image.trim() : \"\",\n      comment: item.json.comment ? item.json.comment.trim() : \"\"\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        352
+      ],
+      "id": "cf447c8e-a424-4b5b-b0d9-8abb8efec8bf",
+      "name": "Code in JavaScript37"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  // Check all possible field names from Google Sheets node\n  let rawImage = item.json.image || item.json.imagePath || item.json.image_url || \"\";\n  rawImage = rawImage.trim();\n\n  // Remove file:/// or file://\n  let cleanImage = rawImage.replace(/^file:\\/\\/\\/?/i, \"\");\n\n  return {\n    json: {\n      row_number: item.json.row_number || null,\n      title: item.json.title ? item.json.title.replace(/[\\r\\n]+/g, \" \").trim() : \"\",\n      imagePath: cleanImage,\n      comment: item.json.comment ? item.json.comment.trim() : \"\"\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        352
+      ],
+      "id": "01c48ce8-60c3-4b64-a956-16b5afbbd8e6",
+      "name": "JavaScript Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const firstTenItems = $input.all().slice(0, 130);\n\nfor (const item of firstTenItems) {\n  item.json.myNewField = 1;\n}\n\nreturn firstTenItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        352
+      ],
+      "id": "d863f74e-4af3-43ac-a69b-add7fd2ac040",
+      "name": "Code in JavaScript38"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const cleanError = (item.json.error || \"\")\n    .replace(/\\x1B\\[[0-9;]*m/g, \"\")\n    .replace(/[<>&]/g, \"\");\n\n  item.json.clean_error = cleanError;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        480
+      ],
+      "id": "2e1909ca-b75e-48a3-9bbd-db90b6ff8f55",
+      "name": "Code in JavaScript39"
+    },
+    {
+      "parameters": {
+        "chatId": "6892503934",
+        "text": "=Error : Google sheet start 🙋🏻🚨\nError : Google sheet start 🙋🏻🚨\nError : Google sheet start 🙋🏻🚨\nError : Google sheet start 🙋🏻🚨",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        208
+      ],
+      "id": "2a4e2ba3-efab-435d-bf44-811d386218d9",
+      "name": "send",
+      "webhookId": "1affb122-d7a6-4c51-a293-0376b5494696",
+      "credentials": {
+        "telegramApi": {
+          "id": "mpJx1GY5b13PpKua",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "6892503934",
+        "text": "=✅❌✅❌✅❌✅\n✅❌✅❌✅❌✅\n✅❌✅❌✅❌✅\n✅❌✅❌✅❌✅\n✅❌✅❌✅❌✅\nSub 2",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2096,
+        240
+      ],
+      "id": "a5bc1e01-640e-4ecc-b6d8-b6cd9988ea67",
+      "name": "send4",
+      "webhookId": "1affb122-d7a6-4c51-a293-0376b5494696",
+      "credentials": {
+        "telegramApi": {
+          "id": "mpJx1GY5b13PpKua",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: $input.first().json\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3248,
+        640
+      ],
+      "id": "a307f1cb-50c2-4648-9090-cf6e95809931",
+      "name": "Code in JavaScript1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "6892503934",
+        "text": "=⬆️⬆️⬆️⬆️\n✅✅✅✅\nSub 2",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3440,
+        640
+      ],
+      "id": "bdc17b2a-7a6c-4baf-8252-b405c8dcf371",
+      "name": "send5",
+      "webhookId": "1affb122-d7a6-4c51-a293-0376b5494696",
+      "credentials": {
+        "telegramApi": {
+          "id": "mpJx1GY5b13PpKua",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "428f8f8e-1d42-4572-bbab-de7230d793b9",
+              "leftValue": "={{ $json.commentStatus }}",
+              "rightValue": "SUCCESS",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "f550eb28-6ebc-436d-b201-13538153d748",
+              "leftValue": "={{ $json.postStatus }}",
+              "rightValue": "SUCCESS",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2448,
+        400
+      ],
+      "id": "820431ba-2688-44aa-a8bf-f0766d59382e",
+      "name": "if"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9f26ed67-1d5b-4f54-a53d-a07d38d9e5be",
+              "name": "profile",
+              "value": "={{ $json.profile }}",
+              "type": "string"
+            },
+            {
+              "id": "2a73d541-4ab3-49d7-a255-0a321b16541f",
+              "name": "group_url",
+              "value": "={{ $json.group_url }}",
+              "type": "string"
+            },
+            {
+              "id": "4a1eb05c-c9bc-4c8b-a1dc-79fa29fea3c8",
+              "name": "postStatus",
+              "value": "={{ $json.postStatus }}",
+              "type": "string"
+            },
+            {
+              "id": "13a3be0e-61a4-4968-88fc-038f40eeb9f8",
+              "name": "commentStatus",
+              "value": "={{ $json.commentStatus }}",
+              "type": "string"
+            },
+            {
+              "id": "a369948c-a037-47b0-ad24-96f465f34c27",
+              "name": "error",
+              "value": "={{ $json.error }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2288,
+        400
+      ],
+      "id": "ea3d56e4-1af3-446c-ac20-6e00a5daa94a",
+      "name": "result"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  const originalUrl = item.json.comment || '';\n  \n  const encodedUrl = encodeURIComponent(originalUrl);\n  \n  const fakeFbclid = \"IwcGRvZgFleHRuA2FlbQIxMABicmlkETFJZlJPejFWVGU5T0xjZmd6c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHs4ezYptdfV2vKMd7eg4d4yK\";\n  \n  item.json.comment = `https://l.facebook.com/l.php?u=${encodedUrl}%3Ffbclid%3D${fakeFbclid}`;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1904,
+        368
+      ],
+      "id": "c309c8a2-004c-41f9-8a80-1c415a8e654f",
+      "name": "http://Facebook"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: $input.first().json\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1904,
+        240
+      ],
+      "id": "b8fcc6da-9e44-4f5c-8f5a-abd1053f89a4",
+      "name": "done",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "428f8f8e-1d42-4572-bbab-de7230d793b9",
+              "leftValue": "={{ $json.commentStatus }}",
+              "rightValue": "SUCCESS",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "f550eb28-6ebc-436d-b201-13538153d748",
+              "leftValue": "={{ $json.postStatus }}",
+              "rightValue": "SUCCESS",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2656,
+        480
+      ],
+      "id": "c5ca61e4-83ae-47f9-90cc-56289567fe9a",
+      "name": "if / or"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3002/browser",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"{{ $json.title.replace(/[\\r\\n]+/g, ' ').trim() }}\",\n  \"imagePath\": \"{{ $json.imagePath }}\",\n  \"comment\": \"{{ $json.comment }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2096,
+        432
+      ],
+      "id": "d0d7a40b-0d6e-4ba5-8e01-1f805946b929",
+      "name": "HTTP Request",
+      "onError": "continueErrorOutput",
+      "notes": "false"
+    },
+    {
+      "parameters": {
+        "content": "## sv1.js",
+        "height": 720,
+        "width": 2992,
+        "color": "#000000"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        864,
+        32
+      ],
+      "id": "4242713b-5caa-47e1-aff2-1b418d7cbe87",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Sub 2\n",
+        "height": 176,
+        "width": 448,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        560
+      ],
+      "id": "2e2c49b0-9901-4e23-8d29-7be01935fc92",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "chatId": "6892503934",
+        "text": "=error sub 2",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1568,
+        608
+      ],
+      "id": "10e65280-120f-4e65-a890-4e7eaac554d9",
+      "name": "send2",
+      "webhookId": "1affb122-d7a6-4c51-a293-0376b5494696",
+      "credentials": {
+        "telegramApi": {
+          "id": "mpJx1GY5b13PpKua",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send1": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet5": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript38",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge8": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript36",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript36": {
+      "main": [
+        [
+          {
+            "node": "Loop 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop 1": {
+      "main": [
+        [
+          {
+            "node": "done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "http://Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript37": {
+      "main": [
+        [
+          {
+            "node": "JavaScript Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JavaScript Code": {
+      "main": [
+        [
+          {
+            "node": "Loop 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript38": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript37",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript39": {
+      "main": [
+        [
+          {
+            "node": "send1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "send5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send5": {
+      "main": [
+        []
+      ]
+    },
+    "if": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "if / or",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "result": {
+      "main": [
+        [
+          {
+            "node": "if",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "http://Facebook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "done": {
+      "main": [
+        [
+          {
+            "node": "send4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if / or": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript39",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript39",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "500acbc15071f27dd48d1ec68955f9a2da0e93e5405945678b09708cd048df90"
+  }
+}
